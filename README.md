@@ -38,7 +38,9 @@ cp config/windows-host.example.env config/windows-host.env
   --seconds 15
 ```
 
-调度器拒绝绑定脏工作区：CAN 证据必须对应一个明确、已推送到 `origin/main` 的固件 commit。Windows 会拉取本桥接仓库、下载本地测试所需的 `Can_analyze` 厂商 DLL 副本、监听 CAN1，并把 ZIP 结果传回：
+调度器拒绝绑定脏工作区：CAN 证据必须标记一个明确、已推送到 `origin/main` 的固件 commit。执行调度前，必须先在 Mac 上构建并烧录该 commit。CAN 分析仪不能独立读取或证明开发板中的 Git commit，因此 `result.json` 会明确把它记录为调度器标签，而不是硬件验证值。
+
+Windows 会拉取本桥接仓库、下载本地测试所需的 `Can_analyze` 厂商 DLL 副本、监听 CAN1，并把 ZIP 结果传回：
 
 ```text
 artifacts/windows-can/<firmware-commit>/<timestamp>/
@@ -47,4 +49,3 @@ artifacts/windows-can/<firmware-commit>/<timestamp>/
 ```
 
 `result.json` 中的 `frame_count` 大于零，才证明 Windows CAN 分析仪收到了物理总线帧。
-

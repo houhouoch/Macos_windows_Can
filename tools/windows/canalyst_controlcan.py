@@ -131,6 +131,8 @@ def run(args: argparse.Namespace) -> int:
         "platform": platform.platform(),
         "python_bits": ctypes.sizeof(ctypes.c_void_p) * 8,
         "firmware_commit": args.firmware_commit,
+        "firmware_commit_source": "dispatcher_label",
+        "firmware_commit_verified_on_target": False,
         "bridge_commit": args.bridge_commit,
         "device_type": VCI_USBCAN2,
         "device_index": DEVICE_INDEX,
@@ -265,4 +267,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
