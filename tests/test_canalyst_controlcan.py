@@ -56,7 +56,7 @@ class ControlCanLayoutTests(unittest.TestCase):
     def test_output_on_wire_frame(self) -> None:
         frame = OUTPUT_MODULE.build_output_frame(True)
 
-        self.assertEqual(frame.ID, 0x01250000)
+        self.assertEqual(frame.ID, 0x01150000)
         self.assertEqual(frame.ExternFlag, 1)
         self.assertEqual(frame.DataLen, 8)
         self.assertEqual(
@@ -67,7 +67,7 @@ class ControlCanLayoutTests(unittest.TestCase):
     def test_output_off_wire_frame(self) -> None:
         frame = OUTPUT_MODULE.build_output_frame(False)
 
-        self.assertEqual(frame.ID, 0x01250000)
+        self.assertEqual(frame.ID, 0x01150000)
         self.assertEqual(
             bytes(frame.Data),
             bytes((0x01, 0, 0, 0, 0x00, 0, 0, 0)),

@@ -29,8 +29,8 @@ from canalyst_controlcan import (
 )
 
 
-OUTPUT_REQUEST_IDENTIFIER = 0x01250000
-OUTPUT_ACK_IDENTIFIER_ADDRESS_1 = 0x11250001
+OUTPUT_REQUEST_IDENTIFIER = 0x01150000
+OUTPUT_ACK_IDENTIFIER_ADDRESS_1 = 0x11150001
 OUTPUT_ACTION = 1
 OUTPUT_ACK_ACCEPTED = 1
 
@@ -237,4 +237,3 @@ def run(args: argparse.Namespace) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(run(parse_args()))
-
