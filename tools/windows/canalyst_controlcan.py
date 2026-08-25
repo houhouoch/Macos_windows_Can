@@ -74,6 +74,14 @@ def configure_api(dll: Any) -> None:
     dll.VCI_ResetCAN.restype = uint32
     dll.VCI_GetReceiveNum.argtypes = [uint32, uint32, uint32]
     dll.VCI_GetReceiveNum.restype = uint32
+    dll.VCI_Transmit.argtypes = [
+        uint32,
+        uint32,
+        uint32,
+        ctypes.POINTER(VciCanObject),
+        uint32,
+    ]
+    dll.VCI_Transmit.restype = uint32
     dll.VCI_Receive.argtypes = [
         uint32,
         uint32,

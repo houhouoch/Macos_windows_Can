@@ -1,5 +1,6 @@
 import ctypes
 import importlib.util
+import sys
 import unittest
 from pathlib import Path
 
@@ -14,6 +15,20 @@ SPEC = importlib.util.spec_from_file_location("canalyst_controlcan", MODULE_PATH
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
+sys.modules["canalyst_controlcan"] = MODULE
+
+OUTPUT_MODULE_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "tools"
+    / "windows"
+    / "canalyst_output_command.py"
+)
+OUTPUT_SPEC = importlib.util.spec_from_file_location(
+    "canalyst_output_command", OUTPUT_MODULE_PATH
+)
+assert OUTPUT_SPEC is not None and OUTPUT_SPEC.loader is not None
+OUTPUT_MODULE = importlib.util.module_from_spec(OUTPUT_SPEC)
+OUTPUT_SPEC.loader.exec_module(OUTPUT_MODULE)
 
 
 class ControlCanLayoutTests(unittest.TestCase):
@@ -37,6 +52,26 @@ class ControlCanLayoutTests(unittest.TestCase):
         self.assertEqual(record["frame_format"], "extended")
         self.assertEqual(record["dlc"], 3)
         self.assertEqual(record["data_hex"], "10 20 30")
+
+    def test_output_on_wire_frame(self) -> None:
+        frame = OUTPUT_MODULE.build_output_frame(True)
+
+        self.assertEqual(frame.ID, 0x01250000)
+        self.assertEqual(frame.ExternFlag, 1)
+        self.assertEqual(frame.DataLen, 8)
+        self.assertEqual(
+            bytes(frame.Data),
+            bytes((0x01, 0, 0, 0, 0x01, 0, 0, 0)),
+        )
+
+    def test_output_off_wire_frame(self) -> None:
+        frame = OUTPUT_MODULE.build_output_frame(False)
+
+        self.assertEqual(frame.ID, 0x01250000)
+        self.assertEqual(
+            bytes(frame.Data),
+            bytes((0x01, 0, 0, 0, 0x00, 0, 0, 0)),
+        )
 
 
 if __name__ == "__main__":
