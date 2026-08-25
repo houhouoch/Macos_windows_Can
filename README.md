@@ -49,3 +49,18 @@ artifacts/windows-can/<firmware-commit>/<timestamp>/
 ```
 
 `result.json` 中的 `frame_count` 大于零，才证明 Windows CAN 分析仪收到了物理总线帧。
+
+## 从 Windows 发送输出命令
+
+Windows 厂商软件 `USB_CAN_Tool.exe` 必须先关闭。以下命令发送一次 UDP3900 输出 ON，并监听 3 秒 ACK：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass `
+  -File C:\work\Macos_windows_Can\tools\windows\send_output_command.ps1 `
+  -Target On `
+  -ListenSeconds 3
+```
+
+ON 使用扩展 ID `0x01250000` 和数据 `01 00 00 00 01 00 00 00`。该命令不会自动发送 OFF；目标可能保持 ON，直到用户、嵌入式逻辑或保护机制主动关闭。执行前必须确认输出端和负载安全。
+
+测试结果写入 Windows 的忽略目录 `artifacts/output-command`，压缩副本写入 `outbox`。这些文件不会提交到公开 GitHub 仓库。
