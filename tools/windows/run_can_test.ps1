@@ -22,6 +22,12 @@ $ZipPath = Join-Path $OutboxDirectory "$FirmwareCommit-$Timestamp.zip"
 New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null
 New-Item -ItemType Directory -Path $OutboxDirectory -Force | Out-Null
 
+$BlockingProcess = Get-Process -Name "USB_CAN_Tool" -ErrorAction SilentlyContinue
+if ($BlockingProcess) {
+    $BlockingIds = ($BlockingProcess | Select-Object -ExpandProperty Id) -join ","
+    throw "USB_CAN_Tool.exe is using CANalyst-II (PID $BlockingIds). Close it before the headless test."
+}
+
 $SetupOutput = & (Join-Path $PSScriptRoot "setup_vendor.ps1")
 $DllLine = $SetupOutput | Where-Object { $_ -like "CONTROLCAN_DLL=*" } | Select-Object -Last 1
 if (-not $DllLine) {
@@ -43,4 +49,3 @@ $TestExitCode = $LASTEXITCODE
 Compress-Archive -Path (Join-Path $OutputDirectory "*") -DestinationPath $ZipPath -Force
 Write-Output "RESULT_ZIP=$ZipPath"
 exit $TestExitCode
-
