@@ -4,9 +4,20 @@ param()
 $ErrorActionPreference = "Stop"
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..\..")).Path
 $VendorRoot = Join-Path $RepoRoot "vendor\Can_analyze"
-$DllPath = Join-Path $VendorRoot "二次开发库文件\x64(64bit)\ControlCAN.dll"
 
-if (-not (Test-Path $DllPath)) {
+function Find-ControlCanDll {
+    if (-not (Test-Path $VendorRoot)) {
+        return $null
+    }
+
+    return Get-ChildItem -Path $VendorRoot -Filter "ControlCAN.dll" -File -Recurse |
+        Where-Object { $_.Directory.Name -eq "x64(64bit)" } |
+        Select-Object -First 1 -ExpandProperty FullName
+}
+
+$DllPath = Find-ControlCanDll
+
+if (-not $DllPath) {
     if (Test-Path $VendorRoot) {
         throw "Vendor directory exists but ControlCAN.dll is missing: $VendorRoot"
     }
@@ -16,11 +27,12 @@ if (-not (Test-Path $DllPath)) {
     if ($LASTEXITCODE -ne 0) {
         throw "Failed to clone Can_analyze vendor source"
     }
+
+    $DllPath = Find-ControlCanDll
 }
 
-if (-not (Test-Path $DllPath)) {
-    throw "ControlCAN.dll was not found after vendor setup: $DllPath"
+if (-not $DllPath) {
+    throw "ControlCAN.dll was not found after vendor setup: $VendorRoot"
 }
 
 Write-Output "CONTROLCAN_DLL=$DllPath"
-
