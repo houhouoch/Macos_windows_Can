@@ -1,0 +1,28 @@
+# Local configuration and credentials
+.env
+config/windows-host.env
+*.key
+*.pem
+
+# Downloaded vendor material
+vendor/
+*.dll
+
+# CAN captures and generated test evidence
+artifacts/
+outbox/
+*.pcap
+*.pcapng
+*.blf
+*.trc
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# macOS and Windows
+.DS_Store
+Thumbs.db
+
